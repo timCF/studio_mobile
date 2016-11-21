@@ -1,0 +1,3 @@
+rootProject.name = 'studio_mobile'
+
+include ':app'
