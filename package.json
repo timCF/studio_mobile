@@ -10,7 +10,8 @@
     "component-ajax": "0.0.2",
     "react": "15.3.2",
     "react-native": "0.37.0",
-    "jsfunky": "timCF/jsfunky#8d73af422c4e3c30f78a8e1689d2f09b7d5ccbb0"
+    "jsfunky": "timCF/jsfunky#8d73af422c4e3c30f78a8e1689d2f09b7d5ccbb0",
+    "jsfunky": "timCF/bulletjs#e8c87334bad8c496965487c33f60a8e822fd3535"
   },
   "jest": {
     "preset": "jest-react-native"
