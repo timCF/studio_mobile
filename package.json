@@ -7,6 +7,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "base64-arraybuffer": "^0.1.5",
+    "protobufjs": "^5.0.1",
     "component-ajax": "0.0.2",
     "react": "15.3.2",
     "react-native": "0.37.0",
