@@ -1,7 +1,8 @@
 #
 #  just template for your own data structs
 #
-module.exports = (utils) -->
+module.exports = (state) -->
+  {utils: utils} = state
   proto2base64 = require('base64-arraybuffer')
   builder = require("protobufjs").loadProto(require("../../app/js/sproto"), {file: "studio.proto", root: "a"})
   utils.proto = builder.build().lemooor.studio
@@ -30,4 +31,4 @@ module.exports = (utils) -->
       "protobuf decode error "+error+" raw data : "+data
   utils.encode_proto = (data) ->
     proto2base64.encode( utils.proto.Request.encode(data).toArrayBuffer() )
-  utils
+  state

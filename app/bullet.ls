@@ -1,4 +1,5 @@
-module.exports = (utils) -->
+module.exports = (state, root_component) -->
+  {utils: utils} = state
   jf = require("jsfunky")
   #
   # shitty workaround to make "bulletjs" library work
@@ -11,8 +12,14 @@ module.exports = (utils) -->
   #
   #
   require("bulletjs")
-  bullet = jQuery.bullet("ws://127.0.0.1:7773/bullet")
-  bullet.onopen = -> console.log("соединение с сервером установлено")
+  bullet = jQuery.bullet("ws://193.70.100.32:7773/bullet")
+  bullet.onopen = ->
+    #
+    # TODO : do it normal way
+    #
+    state.app_status = "соединение с сервером установлено"
+    root_component.setState(state)
+    console.log("соединение с сервером установлено")
   bullet.ondisconnect = -> console.log("соединение с сервером потеряно")
   bullet.onclose = -> console.log("соединение с сервером закрыто")
   bullet.onheartbeat = -> console.log("tick ...")
@@ -20,4 +27,4 @@ module.exports = (utils) -->
     data
     |> utils.decode_proto(_)
     |> console.log(_)
-  utils
+  state
