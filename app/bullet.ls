@@ -1,4 +1,4 @@
-module.exports = (state, root_component) -->
+module.exports = (state) -->
   {utils: utils} = state
   jf = require("jsfunky")
   #
@@ -14,17 +14,30 @@ module.exports = (state, root_component) -->
   require("bulletjs")
   bullet = jQuery.bullet("ws://193.70.100.32:7773/bullet")
   bullet.onopen = ->
-    #
-    # TODO : do it normal way
-    #
-    state.app_status = "соединение с сервером установлено"
-    root_component.setState(state)
-    console.log("соединение с сервером установлено")
-  bullet.ondisconnect = -> console.log("соединение с сервером потеряно")
-  bullet.onclose = -> console.log("соединение с сервером закрыто")
-  bullet.onheartbeat = -> console.log("tick ...")
+    utils.mutate_state("app_status", "соединение с сервером установлено")
+    console.log(state.app_status)
+    # get latest state
+    msg = utils.new_message()
+    msg.cmd = 'CMD_get_state'
+    utils.to_server(msg)
+  bullet.ondisconnect = ->
+    utils.mutate_state("app_status", "соединение с сервером потеряно")
+    console.log(state.app_status)
+  bullet.onclose = ->
+    utils.mutate_state("app_status", "соединение с сервером закрыто")
+    console.log(state.app_status)
+  bullet.onheartbeat = ->
+    console.log("ping ...")
+    msg = utils.new_message()
+    msg.cmd = 'CMD_ping'
+    utils.to_server(msg)
   bullet.onmessage = (data) -->
-    data
-    |> utils.decode_proto(_)
-    |> console.log(_)
+    message = utils.decode_proto(data)
+    console.log("incoming message from server", message)
+    utils.handle_message(message)
+  utils.to_server = (message) -->
+    console.log("sending message to server", message)
+    message
+    |> utils.encode_proto(_)
+    |> bullet.send(_)
   state
