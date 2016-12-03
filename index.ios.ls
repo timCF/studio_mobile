@@ -19,7 +19,7 @@ cal_opts = {
   #onSwipePrev={this.onSwipePrev}    // Callback for back swipe event
   #onSwipeNext={this.onSwipeNext}    // Callback for forward swipe event
   eventDates: ['2016-12-07', '2016-12-05', '2016-12-28', '2016-12-30']
-  events: [{date: '2016-12-04', hasEventCircle: {backgroundColor: 'powderblue'}}]
+  events: [{date: '2016-12-06', hasEventCircle: {backgroundColor: 'powderblue'}}]
   #today={'2016-16-05'}              // Defaults to today
   #startDate={'2015-08-01'}          // The first month that will display. Default: current month
   #selectedDate={'2015-08-15'}       // Day to be selected
@@ -36,6 +36,13 @@ studio_mobile = React.createClass({
     ]),
     React.createElement( RN.ScrollView, {key: "main", contentContainerStyle: styles.calendar}, [
       React.createElement( Calendar, cal_opts, []),
+      #
+      # TODO : dynamic width
+      #
+      #React.createElement( RN.Picker, {key: "pick", selectedValue: "foo", onValueChange: ((data) -> console.log("picked", data))}, [
+      #  React.createElement( RN.Picker.Item, {key: "pick_1", label: "JAVA", value: "foo"}, []),
+      #  React.createElement( RN.Picker.Item, {key: "pick_2", label: "ERLANG", value: "bar"}, []),
+      #]),
     ]),
   ])
 })
