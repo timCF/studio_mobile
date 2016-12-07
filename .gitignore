@@ -42,5 +42,7 @@ android/keystores/debug.keystore
 
 # mine
 index.ios.js
+index.android.js
 app/sproto*
 app/js
+app.js
