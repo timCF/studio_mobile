@@ -27,23 +27,53 @@ cal_opts = {
   weekStart: 1              # Day on which week starts 0 - Sunday, 1 - Monday, 2 - Tuesday, etc, Default: 1
 }
 
+concat = (l1, l2) --> (l1 ++ l2)
+
+maybe_room_color = (state) ->
+  this_room = state.current.room_id
+  if (this_room != "")
+    {backgroundColor: state.dicts.rooms_full[this_room].color}
+  else
+    {}
+
+render_options = (state) -->
+  [
+    [React.createElement( RN.Picker.Item, {key: "options_location_empty", label: "выберите базу", value: ""})]
+    |> concat(_,  state.response_state.locations.map((el) --> React.createElement( RN.Picker.Item, {key: "options_location_#{el.id.toString()}", label: el.name, value: el.id.toString()})))
+    |> React.createElement( RN.Picker, {key: "options_location", style: styles.fill50, selectedValue: state.current.location_id, onValueChange: state.utils.set_location}, _)
+  ]
+  |> concat(_,
+    if (state.current.location_id == "")
+      []
+    else
+      [
+        [React.createElement( RN.Picker.Item, {key: "options_room_empty", label: "выберите комнату", value: ""})]
+        |> concat(_,
+          state.response_state.rooms
+          |> [].filter.call(_, ({location_id: lid}) --> lid.toString() == state.current.location_id)
+          |> [].map.call(_, (el) --> React.createElement( RN.Picker.Item, {key: "options_room_#{el.id.toString()}", color: el.color, label: el.name, value: el.id.toString()}))
+        )
+        |> React.createElement( RN.Picker, {key: "options_room", style: styles.fill50, selectedValue: state.current.room_id, onValueChange: state.utils.mutate_state(["current","room_id"], _)}, _)
+      ]
+  )
+  |> React.createElement( RN.View, {key: "options", style: [styles.row, styles.fill]}, _)
+
 studio_mobile = React.createClass({
   getInitialState: -> require("./app/js/main")(this),
   render: -> React.createElement( RN.View, {style: styles.root}, [
-    React.createElement( RN.StatusBar, {key: "status_bar", hidden: true}, [] ),
+    React.createElement( RN.StatusBar, {key: "status_bar", hidden: true}),
     React.createElement( RN.View, {key: "status_string"}, [
-      React.createElement( RN.Text, {key: "status_string_state"}, this.state.app_status ),
+      React.createElement( RN.Text, {key: "status_string_state", style: [styles.status_string, maybe_room_color(this.state)]}, this.state.app_status ),
     ]),
-    React.createElement( RN.ScrollView, {key: "main", contentContainerStyle: styles.calendar}, [
-      React.createElement( Calendar, cal_opts, []),
-      #
-      # TODO : dynamic width
-      #
-      #React.createElement( RN.Picker, {key: "pick", selectedValue: "foo", onValueChange: ((data) -> console.log("picked", data))}, [
-      #  React.createElement( RN.Picker.Item, {key: "pick_1", label: "JAVA", value: "foo"}, []),
-      #  React.createElement( RN.Picker.Item, {key: "pick_2", label: "ERLANG", value: "bar"}, []),
-      #]),
-    ]),
+    React.createElement( RN.ScrollView, {key: "main", contentContainerStyle: styles.calendar},
+      if this.state.ready2render
+        [
+          render_options(this.state),
+          React.createElement(Calendar, cal_opts),
+        ]
+      else
+        []
+    ),
   ])
 })
 

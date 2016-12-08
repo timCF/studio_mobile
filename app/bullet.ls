@@ -14,17 +14,14 @@ module.exports = (state) -->
   require("bulletjs")
   bullet = jQuery.bullet("ws://193.70.100.32:7773/bullet")
   bullet.onopen = ->
-    utils.mutate_state("app_status", "соединение с сервером установлено")
+    utils.mutate_state(["app_status"], "соединение с сервером установлено")
     console.log(state.app_status)
-    # get latest state
-    msg = utils.new_message()
-    msg.cmd = 'CMD_get_state'
-    utils.to_server(msg)
+    utils.get_latest_state()
   bullet.ondisconnect = ->
-    utils.mutate_state("app_status", "соединение с сервером потеряно")
+    utils.mutate_state(["app_status"], "соединение с сервером потеряно")
     console.log(state.app_status)
   bullet.onclose = ->
-    utils.mutate_state("app_status", "соединение с сервером закрыто")
+    utils.mutate_state(["app_status"], "соединение с сервером закрыто")
     console.log(state.app_status)
   bullet.onheartbeat = ->
     console.log("ping ...")

@@ -3,6 +3,13 @@ module.exports = (root_component) ->
     login: '',
     password: '',
     app_status: "инициализация",
+    dicts: {},
+    ready2render: false,
+    response_state: false,
+    current: {
+      location_id: "",
+      room_id: "",
+    }
   }
   state.utils = require("../../app/js/utils")(state, root_component)
   state
