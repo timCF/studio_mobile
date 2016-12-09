@@ -77,16 +77,16 @@ render_timeline = (state) -->
 
 studio_mobile = React.createClass({
   getInitialState: -> require("./app/js/main")(this),
-  render: -> React.createElement( RN.View, {style: [styles.col]}, [
+  render: -> React.createElement( RN.View, {style: [styles.col, styles.flex1]}, [
     React.createElement( RN.StatusBar, {key: "status_bar", hidden: true}),
-    [React.createElement( RN.Text, {key: "status_string_state", style: [styles.ceterText, styles.flex1]}, this.state.app_status )]
-    |> React.createElement( RN.View, {key: "status_string", style: [styles.row]}, _),
+    #[React.createElement( RN.Text, {key: "status_string_state", style: [styles.ceterText, styles.flex1]}, this.state.app_status )]
+    #|> React.createElement( RN.View, {key: "status_string", style: [styles.row]}, _),
     React.createElement( RN.ScrollView, {key: "main", contentContainerStyle: [styles.col]},
       if this.state.ready2render
         [
-          render_options(this.state),
           [React.createElement(Calendar, jf.put_in(cal_opts, ["utils"], this.state.utils))]
           |> React.createElement( RN.View, {key: "calendar_wrapper", style: [{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}]}, _),
+          render_options(this.state),
         ]
         |> concat(_, (if (this.state.current.room_id != "") then [render_timeline(this.state)] else []))
       else
