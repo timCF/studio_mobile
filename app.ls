@@ -42,7 +42,7 @@ render_options = (state) -->
   [
     [React.createElement( RN.Picker.Item, {key: "options_location_empty", label: "выберите базу", value: ""})]
     |> concat(_,  state.response_state.locations.map((el) --> React.createElement( RN.Picker.Item, {key: "options_location_#{el.id.toString()}", label: el.name, value: el.id.toString()})))
-    |> React.createElement( RN.Picker, {key: "options_location", style: styles.fill50, selectedValue: state.current.location_id, onValueChange: state.utils.set_location}, _)
+    |> React.createElement( RN.Picker, {key: "options_location", style: [styles.flex1], selectedValue: state.current.location_id, onValueChange: state.utils.set_location}, _)
   ]
   |> concat(_,
     if (state.current.location_id == "")
@@ -55,32 +55,38 @@ render_options = (state) -->
           |> [].filter.call(_, ({location_id: lid}) --> lid.toString() == state.current.location_id)
           |> [].map.call(_, (el) --> React.createElement( RN.Picker.Item, {key: "options_room_#{el.id.toString()}", color: el.color, label: el.name, value: el.id.toString()}))
         )
-        |> React.createElement( RN.Picker, {key: "options_room", style: styles.fill50, selectedValue: state.current.room_id, onValueChange: state.utils.mutate_state(["current","room_id"], _)}, _)
+        |> React.createElement( RN.Picker, {key: "options_room", style: [styles.flex1], selectedValue: state.current.room_id, onValueChange: state.utils.mutate_state(["current","room_id"], _)}, _)
       ]
   )
-  |> React.createElement( RN.View, {key: "options", style: [styles.row, styles.fill]}, _)
+  |> React.createElement( RN.View, {key: "options", style: [styles.row]}, _)
 
 render_timeline = (state) -->
   mf = 'YYYY-MM-DD'
   mh = 'HH:mm'
   this_day = state.current.moment.format(mf)
-  state.response_state.sessions
-  |> [].filter.call(_, (el) --> (el.room_id.toString() == state.current.room_id) and (moment(el.time_from.toString() * 1000).format(mf) == this_day))
-  |> [].map.call(_, (el, i) --> React.createElement( RN.Text, {key: "timeline_#{i}", style: [styles.status_string, maybe_room_color(state)]}, "#{moment(el.time_from.toString() * 1000).format(mh)} - #{moment(el.time_to.toString() * 1000).format(mh)}" ) )
-  |> React.createElement( RN.View, {key: "timeline"}, _)
+  React.createElement( RN.View, {key: "timeline", style: [styles.row]}, [
+    React.createElement( RN.View, {key: "timeline_scale", style: [styles.col, styles.flex1]}),
+    React.createElement( RN.View, {key: "timeline_content", style: [styles.col, styles.flex1]},
+      state.response_state.sessions
+      |> [].filter.call(_, (el) --> (el.room_id.toString() == state.current.room_id) and (moment(el.time_from.toString() * 1000).format(mf) == this_day))
+      |> [].map.call(_, (el, i) -->
+        [React.createElement( RN.Text, {key: "timeline_#{i}", style: [styles.ceterText, styles.flex1, maybe_room_color(state)]}, "#{moment(el.time_from.toString() * 1000).format(mh)} - #{moment(el.time_to.toString() * 1000).format(mh)}" )]
+        |> React.createElement( RN.View, {key: "timeline_wrapper_#{i}", style: [styles.row]}, _))
+    ),
+  ])
 
 studio_mobile = React.createClass({
   getInitialState: -> require("./app/js/main")(this),
-  render: -> React.createElement( RN.View, {style: styles.root}, [
+  render: -> React.createElement( RN.View, {style: [styles.col]}, [
     React.createElement( RN.StatusBar, {key: "status_bar", hidden: true}),
-    React.createElement( RN.View, {key: "status_string"}, [
-      React.createElement( RN.Text, {key: "status_string_state", style: styles.status_string}, this.state.app_status ),
-    ]),
-    React.createElement( RN.ScrollView, {key: "main", contentContainerStyle: styles.calendar},
+    [React.createElement( RN.Text, {key: "status_string_state", style: [styles.ceterText, styles.flex1]}, this.state.app_status )]
+    |> React.createElement( RN.View, {key: "status_string", style: [styles.row]}, _),
+    React.createElement( RN.ScrollView, {key: "main", contentContainerStyle: [styles.col]},
       if this.state.ready2render
         [
           render_options(this.state),
-          React.createElement(Calendar, jf.put_in(cal_opts, ["utils"], this.state.utils)),
+          [React.createElement(Calendar, jf.put_in(cal_opts, ["utils"], this.state.utils))]
+          |> React.createElement( RN.View, {key: "calendar_wrapper", style: [{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}]}, _),
         ]
         |> concat(_, (if (this.state.current.room_id != "") then [render_timeline(this.state)] else []))
       else
