@@ -2,6 +2,8 @@ React = require "react"
 RN = require "react-native"
 const styles = require("./app/js/styles")() |> RN.StyleSheet.create(_)
 Calendar = require("react-native-calendar").default
+jf = require("jsfunky")
+moment = require("moment")
 
 cal_opts = {
   key: "calendar"
@@ -13,7 +15,7 @@ cal_opts = {
   monthNames:  ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
   prevButtonText: 'назад'   # Text for previous button. Default: 'Prev'
   nextButtonText: 'вперёд'  # Text for next button. Default: 'Next'
-  onDateSelect: (date) --> console.log("SELECTED", date)
+  onDateSelect: (date) --> @.utils.mutate_state(["current","moment"], moment(date))
   #onTouchPrev={this.onTouchPrev}    // Callback for prev touch event
   #onTouchNext={this.onTouchNext}    // Callback for next touch event
   #onSwipePrev={this.onSwipePrev}    // Callback for back swipe event
@@ -58,19 +60,29 @@ render_options = (state) -->
   )
   |> React.createElement( RN.View, {key: "options", style: [styles.row, styles.fill]}, _)
 
+render_timeline = (state) -->
+  mf = 'YYYY-MM-DD'
+  mh = 'HH:mm'
+  this_day = state.current.moment.format(mf)
+  state.response_state.sessions
+  |> [].filter.call(_, (el) --> (el.room_id.toString() == state.current.room_id) and (moment(el.time_from.toString() * 1000).format(mf) == this_day))
+  |> [].map.call(_, (el, i) --> React.createElement( RN.Text, {key: "timeline_#{i}", style: [styles.status_string, maybe_room_color(state)]}, "#{moment(el.time_from.toString() * 1000).format(mh)} - #{moment(el.time_to.toString() * 1000).format(mh)}" ) )
+  |> React.createElement( RN.View, {key: "timeline"}, _)
+
 studio_mobile = React.createClass({
   getInitialState: -> require("./app/js/main")(this),
   render: -> React.createElement( RN.View, {style: styles.root}, [
     React.createElement( RN.StatusBar, {key: "status_bar", hidden: true}),
     React.createElement( RN.View, {key: "status_string"}, [
-      React.createElement( RN.Text, {key: "status_string_state", style: [styles.status_string, maybe_room_color(this.state)]}, this.state.app_status ),
+      React.createElement( RN.Text, {key: "status_string_state", style: styles.status_string}, this.state.app_status ),
     ]),
     React.createElement( RN.ScrollView, {key: "main", contentContainerStyle: styles.calendar},
       if this.state.ready2render
         [
           render_options(this.state),
-          React.createElement(Calendar, cal_opts),
+          React.createElement(Calendar, jf.put_in(cal_opts, ["utils"], this.state.utils)),
         ]
+        |> concat(_, (if (this.state.current.room_id != "") then [render_timeline(this.state)] else []))
       else
         []
     ),

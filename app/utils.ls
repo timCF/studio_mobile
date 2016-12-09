@@ -1,5 +1,6 @@
 module.exports = (state, root_component) -->
   jf = require("jsfunky")
+  moment = require("moment")
   utils = {
     set_location: (data) -->
       if (state.current.location_id != data)
@@ -26,9 +27,12 @@ module.exports = (state, root_component) -->
           state.dicts.rooms_of_locations = jf.reduce(data.state.rooms, {}, ({id: id, location_id: lid}, acc) -> jf.put_in(acc, [id.toString()], lid.toString()))
           state.response_state = data.state
           state.ready2render = true
+          state.app_status = "данные обновлены"
           utils.render()
           #
           # TODO
           #
           console.log(state)
+    date2moment: (date) ->
+      moment(date.getTime())
   }

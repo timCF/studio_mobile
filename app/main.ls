@@ -1,4 +1,5 @@
 module.exports = (root_component) ->
+  moment = require("moment")
   state = {
     login: '',
     password: '',
@@ -9,6 +10,7 @@ module.exports = (root_component) ->
     current: {
       location_id: "",
       room_id: "",
+      moment: moment(),
     }
   }
   state.utils = require("../../app/js/utils")(state, root_component)
