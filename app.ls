@@ -6,6 +6,7 @@ jf = require("jsfunky")
 moment = require("moment")
 Button = require("apsl-react-native-button")
 ModalPicker = require("react-native-modal-picker").default
+InvertableScroll = require("react-native-invertible-scroll-view")
 
 cal_opts = {
   key: "calendar"
@@ -103,11 +104,12 @@ studio_mobile = React.createClass({
   getInitialState: -> require("./app/js/main")(this),
   render: -> React.createElement( RN.View, {style: [styles.col, styles.flex1]}, [
     React.createElement( RN.StatusBar, {key: "status_bar", hidden: true}),
-    React.createElement( RN.ScrollView, {key: "main", contentContainerStyle: [styles.col]},
+    React.createElement( InvertableScroll, {key: "main", inverted: true, contentContainerStyle: [styles.col]},
       if this.state.ready2render
         (if (this.state.current.room_id != "") then [render_timeline(this.state)] else [])
         |> concat(_, render_calendar(this.state))
         |> concat(_, [render_options(this.state)])
+        |> [].reverse.call(_)
       else
         []
     ),
