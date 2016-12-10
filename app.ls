@@ -4,6 +4,7 @@ const styles = require("./app/js/styles")() |> RN.StyleSheet.create(_)
 Calendar = require("react-native-calendar").default
 jf = require("jsfunky")
 moment = require("moment")
+Button = require("apsl-react-native-button")
 
 cal_opts = {
   key: "calendar"
@@ -76,15 +77,12 @@ render_timeline = (state) -->
   ])
 
 render_navbar = (state) ->
-  [React.createElement( RN.Button, {key: "navbar_calendar", style: [styles.flex1], title: state.utils.verbose_current_date(), onPress: ->})]
+  [React.createElement( Button, {key: "navbar_calendar", style: [styles.flex1, styles.btn], onPress: ->}, state.utils.verbose_current_date())]
   |> concat(_,
     if (state.current.room_id == "")
       []
     else
-      props = {key: "navbar_room", style: [styles.flex1], title: state.utils.verbose_current_room(), onPress: ->}
-      maybe_color = maybe_room_color(state)
-      if maybe_color.backgroundColor then props.color = maybe_color.backgroundColor
-      [React.createElement( RN.Button, props)])
+      React.createElement( Button, {key: "navbar_room", style: [styles.flex1, styles.btn, maybe_room_color(state)], onPress: ->}, state.utils.verbose_current_room()))
   |> React.createElement( RN.View, {key: "navbar", style: [styles.row]}, _)
 
 studio_mobile = React.createClass({

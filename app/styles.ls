@@ -19,4 +19,10 @@ module.exports = ->
     flex1: {
       flex: 1,
     },
+    btn: {
+      borderWidth: 0,
+      backgroundColor: '#66B9BF',
+      marginBottom: 0,
+      borderRadius: 0,
+    },
   }
