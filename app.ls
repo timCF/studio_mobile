@@ -5,6 +5,7 @@ Calendar = require("react-native-calendar").default
 jf = require("jsfunky")
 moment = require("moment")
 Button = require("apsl-react-native-button")
+ModalPicker = require("react-native-modal-picker").default
 
 cal_opts = {
   key: "calendar"
@@ -41,22 +42,26 @@ maybe_room_color = (state) ->
 
 render_options = (state) -->
   [
-    [React.createElement( RN.Picker.Item, {key: "options_location_empty", label: "выберите базу", value: ""})]
-    |> concat(_,  state.response_state.locations.map((el) --> React.createElement( RN.Picker.Item, {key: "options_location_#{el.id.toString()}", label: el.name, value: el.id.toString()})))
-    |> React.createElement( RN.Picker, {key: "options_location", style: [styles.flex1], selectedValue: state.current.location_id, onValueChange: state.utils.set_location}, _)
+    React.createElement( ModalPicker, {
+      key: "options_location",
+      style: [styles.flex1],
+      initValue: "выберите базу",
+      onChange: ({key: key}) --> state.utils.set_location(key),
+      data: state.response_state.locations.map((el) --> {label: el.name, key: el.id.toString()})})
   ]
   |> concat(_,
     if (state.current.location_id == "")
       []
     else
       [
-        [React.createElement( RN.Picker.Item, {key: "options_room_empty", label: "выберите комнату", value: ""})]
-        |> concat(_,
-          state.response_state.rooms
-          |> [].filter.call(_, ({location_id: lid}) --> lid.toString() == state.current.location_id)
-          |> [].map.call(_, (el) --> React.createElement( RN.Picker.Item, {key: "options_room_#{el.id.toString()}", color: el.color, label: el.name, value: el.id.toString()}))
-        )
-        |> React.createElement( RN.Picker, {key: "options_room", style: [styles.flex1], selectedValue: state.current.room_id, onValueChange: state.utils.mutate_state(["current","room_id"], _)}, _)
+        React.createElement( ModalPicker, {
+          key: "options_room",
+          style: [styles.flex1],
+          initValue: (if state.current.room_id == "" then "выберите комнату" else state.dicts.rooms_full[state.current.room_id].name),
+          onChange: ({key: key}) --> state.utils.mutate_state(["current","room_id"], key),
+          data: state.response_state.rooms
+                |> [].filter.call(_, ({location_id: lid}) --> lid.toString() == state.current.location_id)
+                |> [].map.call(_, (el) --> {label: el.name, key: el.id.toString()})})
       ]
   )
   |> React.createElement( RN.View, {key: "options", style: [styles.row]}, _)
