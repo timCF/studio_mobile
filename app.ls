@@ -46,6 +46,7 @@ render_options = (state) -->
       key: "options_location",
       style: [styles.flex1],
       initValue: "выберите базу",
+      cancelText: "отмена",
       onChange: ({key: key}) --> state.utils.set_location(key),
       data: state.response_state.locations.map((el) --> {label: el.name, key: el.id.toString()})})
   ]
@@ -58,6 +59,7 @@ render_options = (state) -->
           key: "options_room",
           style: [styles.flex1],
           initValue: (if state.current.room_id == "" then "выберите комнату" else state.dicts.rooms_full[state.current.room_id].name),
+          cancelText: "отмена",
           onChange: ({key: key}) --> state.utils.mutate_state(["current","room_id"], key),
           data: state.response_state.rooms
                 |> [].filter.call(_, ({location_id: lid}) --> lid.toString() == state.current.location_id)
