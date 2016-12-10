@@ -12,8 +12,13 @@ module.exports = (state, root_component) -->
       "Пятница",
       "Суббота",
     ],
+    time_states: {
+      free: "свободно",
+      ordered: "занято",
+    }
   }
   utils = {
+    access_state: (path) --> jf.get_in(state, path)
     set_location: (data) -->
       if (state.current.location_id != data)
         state.current.location_id = data
@@ -23,8 +28,12 @@ module.exports = (state, root_component) -->
       msg = utils.new_message()
       msg.cmd = 'CMD_get_state'
       utils.to_server(msg)
-    render: --> root_component.setState(state)
-    mutate_state: (path, val) --> root_component.setState( jf.put_in(state, path, val) )
+    render: -->
+      console.log("RENDER", state)
+      root_component.setState(state)
+    mutate_state: (path, val) -->
+      jf.put_in(state, path, val)
+      utils.render()
     handle_message: (data) -->
       switch data.status
         when "RS_ok_void" then "ok"
@@ -57,4 +66,20 @@ module.exports = (state, root_component) -->
         room_name = jf.get_in(state, ["dicts","rooms_full", state.current.room_id, "name"])
         location_name = jf.get_in(state, ["dicts","locations_full", state.dicts.rooms_of_locations[ state.current.room_id ], "name"])
         "#{location_name} #{room_name}"
+    timeline_content: (sessions, React, RN, styles, rcolor, CELL_HEIGHT) ->
+      check_hour = (n) --> if sessions.some(({time_from: tf, time_to: tt}) --> (tf.hours() <= n) and ((if tt.hours() == 0 then 24 else tt.hours()) > n)) then "ordered" else "free"
+      init = {flex: 1, from: "09:00", to: "00:00", kind: check_hour(9)}
+      [10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+      |> jf.reduce(_, [init], (n, [head, ...tail]) ->
+        this_kind = check_hour(n)
+        if head.kind == this_kind
+          head.flex+=1
+          [head] ++ tail
+        else
+          head.to = "#{n}:00"
+          [{flex: 1, kind: this_kind, from: "#{n}:00", to: "00:00"}, head] ++ tail)
+      |> [].reverse.call(_)
+      |> [].map.call(_, ({kind: kind, flex: flex, from: from, to: to}, i) -->
+        [React.createElement( RN.Text, {key: "timeline_#{i}", style: [styles.text, styles.flex1]}, "#{from}-#{to} #{verbose.time_states[kind]}")]
+        |> React.createElement( RN.View, {key: "timeline_wrapper_#{i}", style: [styles.row, styles.cell, {flex: flex, height: (flex * CELL_HEIGHT)}] ++ (if kind == "free" then [] else rcolor)}, _))
   }

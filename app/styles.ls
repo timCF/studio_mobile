@@ -2,7 +2,7 @@ module.exports = ->
   RN = require("react-native")
   {height, width} = RN.Dimensions.get('window')
   BORDER_RADIUS = 5
-  FONT_SIZE = 16
+  FONT_SIZE = 13
   PADDING = 8
   MARGIN = 2
 
@@ -37,8 +37,18 @@ module.exports = ->
       marginBottom: MARGIN,
       marginRight: MARGIN,
     },
-    text: {
+    poor_text: {
       textAlign: 'center',
       fontSize: FONT_SIZE,
+    }
+    text: {
+      textAlign: 'center',
+      alignSelf: 'center',
+      fontSize: FONT_SIZE,
+    },
+    cell: {
+      borderTopWidth: 1,
+      borderRightWidth: 1,
+      borderColor: '#ccc',
     }
   }
