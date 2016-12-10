@@ -11,6 +11,9 @@ module.exports = (root_component) ->
       location_id: "",
       room_id: "",
       moment: moment(),
+    },
+    blocks: {
+      calendar: false,
     }
   }
   state.utils = require("../../app/js/utils")(state, root_component)

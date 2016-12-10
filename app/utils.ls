@@ -2,7 +2,16 @@ module.exports = (state, root_component) -->
   jf = require("jsfunky")
   moment = require("moment")
   verbose = {
-    days_short: ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ']
+    days_short: ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'],
+    days_long: [
+      "Воскресенье",
+      "Понедельник",
+      "Вторник",
+      "Среда",
+      "Четверг",
+      "Пятница",
+      "Суббота",
+    ],
   }
   utils = {
     set_location: (data) -->
@@ -38,7 +47,7 @@ module.exports = (state, root_component) -->
           console.log(state)
     date2moment: (date) ->
       moment(date.getTime())
-    verbose_current_date: -> "#{state.current.moment.format('YYYY-MM-DD')} #{verbose.days_short[ state.current.moment.day() ]}"
+    verbose_current_date: -> "#{state.current.moment.format('YYYY-MM-DD')} #{verbose.days_long[ state.current.moment.day() ]}"
     verbose_current_room: ->
       if (state.current.location_id == "")
         "база-? комната-?"

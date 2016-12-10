@@ -44,7 +44,7 @@ render_options = (state) -->
   [
     React.createElement( ModalPicker, {
       key: "options_location",
-      style: [styles.flex1],
+      style: [styles.flex1, styles.margin3x],
       initValue: "выберите базу",
       cancelText: "отмена",
       onChange: ({key: key}) --> state.utils.set_location(key),
@@ -57,7 +57,7 @@ render_options = (state) -->
       [
         React.createElement( ModalPicker, {
           key: "options_room",
-          style: [styles.flex1],
+          style: [styles.flex1, styles.margin2x],
           initValue: (if state.current.room_id == "" then "выберите комнату" else state.dicts.rooms_full[state.current.room_id].name),
           cancelText: "отмена",
           onChange: ({key: key}) --> state.utils.mutate_state(["current","room_id"], key),
@@ -78,19 +78,26 @@ render_timeline = (state) -->
       state.response_state.sessions
       |> [].filter.call(_, (el) --> (el.room_id.toString() == state.current.room_id) and (moment(el.time_from.toString() * 1000).format(mf) == this_day))
       |> [].map.call(_, (el, i) -->
-        [React.createElement( RN.Text, {key: "timeline_#{i}", style: [styles.ceterText, styles.flex1, maybe_room_color(state)]}, "#{moment(el.time_from.toString() * 1000).format(mh)} - #{moment(el.time_to.toString() * 1000).format(mh)}" )]
+        [React.createElement( RN.Text, {key: "timeline_#{i}", style: [styles.text, styles.flex1, maybe_room_color(state)]}, "#{moment(el.time_from.toString() * 1000).format(mh)} - #{moment(el.time_to.toString() * 1000).format(mh)}" )]
         |> React.createElement( RN.View, {key: "timeline_wrapper_#{i}", style: [styles.row]}, _))
     ),
   ])
 
-render_navbar = (state) ->
-  [React.createElement( Button, {key: "navbar_calendar", style: [styles.flex1, styles.btn], onPress: ->}, state.utils.verbose_current_date())]
-  |> concat(_,
-    if (state.current.room_id == "")
-      []
+render_calendar = (state) -->
+  (
+    if state.blocks.calendar
+      [
+        [React.createElement(Calendar, jf.put_in(cal_opts, ["utils"], state.utils))]
+        |> React.createElement( RN.View, {key: "calendar_wrapper", style: [{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}]}, _)
+      ]
     else
-      React.createElement( Button, {key: "navbar_room", style: [styles.flex1, styles.btn, maybe_room_color(state)], onPress: ->}, state.utils.verbose_current_room()))
-  |> React.createElement( RN.View, {key: "navbar", style: [styles.row]}, _)
+      []
+  )
+  |> concat(_, [React.createElement( Button, {key: "calendar_btn", textStyle: [styles.text], style: [styles.flex1, styles.btn], onPress: -> state.utils.mutate_state(["blocks","calendar"], not(state.blocks.calendar))},
+    if state.blocks.calendar
+      "свернуть календарь"
+    else
+      state.utils.verbose_current_date())])
 
 studio_mobile = React.createClass({
   getInitialState: -> require("./app/js/main")(this),
@@ -98,16 +105,12 @@ studio_mobile = React.createClass({
     React.createElement( RN.StatusBar, {key: "status_bar", hidden: true}),
     React.createElement( RN.ScrollView, {key: "main", contentContainerStyle: [styles.col]},
       if this.state.ready2render
-        [
-          [React.createElement(Calendar, jf.put_in(cal_opts, ["utils"], this.state.utils))]
-          |> React.createElement( RN.View, {key: "calendar_wrapper", style: [{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}]}, _),
-          render_options(this.state),
-        ]
-        |> concat(_, (if (this.state.current.room_id != "") then [render_timeline(this.state)] else []))
+        (if (this.state.current.room_id != "") then [render_timeline(this.state)] else [])
+        |> concat(_, render_calendar(this.state))
+        |> concat(_, [render_options(this.state)])
       else
         []
     ),
-    render_navbar(this.state),
   ])
 })
 

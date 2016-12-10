@@ -1,6 +1,10 @@
 module.exports = ->
   RN = require("react-native")
-  const DEVICE_WIDTH = RN.Dimensions.get('window').width
+  {height, width} = RN.Dimensions.get('window')
+  BORDER_RADIUS = 5
+  FONT_SIZE = 16
+  PADDING = 8
+  MARGIN = 2
 
   {
     col: {
@@ -13,16 +17,28 @@ module.exports = ->
       justifyContent: 'space-between',
       alignItems: 'stretch',
     },
-    ceterText: {
-      textAlign: 'center',
-    },
     flex1: {
       flex: 1,
     },
     btn: {
-      borderWidth: 0,
-      backgroundColor: '#66B9BF',
-      marginBottom: 0,
-      borderRadius: 0,
+      marginBottom: MARGIN,
+      borderColor: '#ccc',
+      borderWidth: 1,
+      borderRadius: BORDER_RADIUS,
+      padding: PADDING,
+      margin: MARGIN,
     },
+    margin3x: {
+      marginBottom: MARGIN,
+      marginLeft: MARGIN,
+      marginRight: MARGIN,
+    },
+    margin2x: {
+      marginBottom: MARGIN,
+      marginRight: MARGIN,
+    },
+    text: {
+      textAlign: 'center',
+      fontSize: FONT_SIZE,
+    }
   }
