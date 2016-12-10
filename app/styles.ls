@@ -18,5 +18,5 @@ module.exports = ->
     },
     flex1: {
       flex: 1,
-    }
+    },
   }

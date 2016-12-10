@@ -75,12 +75,22 @@ render_timeline = (state) -->
     ),
   ])
 
+render_navbar = (state) ->
+  [React.createElement( RN.Button, {key: "navbar_calendar", style: [styles.flex1], title: state.utils.verbose_current_date(), onPress: ->})]
+  |> concat(_,
+    if (state.current.room_id == "")
+      []
+    else
+      props = {key: "navbar_room", style: [styles.flex1], title: state.utils.verbose_current_room(), onPress: ->}
+      maybe_color = maybe_room_color(state)
+      if maybe_color.backgroundColor then props.color = maybe_color.backgroundColor
+      [React.createElement( RN.Button, props)])
+  |> React.createElement( RN.View, {key: "navbar", style: [styles.row]}, _)
+
 studio_mobile = React.createClass({
   getInitialState: -> require("./app/js/main")(this),
   render: -> React.createElement( RN.View, {style: [styles.col, styles.flex1]}, [
     React.createElement( RN.StatusBar, {key: "status_bar", hidden: true}),
-    #[React.createElement( RN.Text, {key: "status_string_state", style: [styles.ceterText, styles.flex1]}, this.state.app_status )]
-    #|> React.createElement( RN.View, {key: "status_string", style: [styles.row]}, _),
     React.createElement( RN.ScrollView, {key: "main", contentContainerStyle: [styles.col]},
       if this.state.ready2render
         [
@@ -92,6 +102,7 @@ studio_mobile = React.createClass({
       else
         []
     ),
+    render_navbar(this.state),
   ])
 })
 
