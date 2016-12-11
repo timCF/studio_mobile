@@ -67,7 +67,13 @@ module.exports = (state, root_component) -->
         location_name = jf.get_in(state, ["dicts","locations_full", state.dicts.rooms_of_locations[ state.current.room_id ], "name"])
         "#{location_name} #{room_name}"
     timeline_content: (sessions, React, RN, styles, rcolor, CELL_HEIGHT) ->
+      #
+      # TODO : use normal moment functions for comparison instead this shit
+      #
       check_hour = (n) --> if sessions.some(({time_from: tf, time_to: tt}) --> (tf.hours() <= n) and ((if tt.hours() == 0 then 24 else tt.hours()) > n)) then "ordered" else "free"
+      #
+      #
+      #
       init = {flex: 1, from: "09:00", to: "00:00", kind: check_hour(9)}
       [10,11,12,13,14,15,16,17,18,19,20,21,22,23]
       |> jf.reduce(_, [init], (n, [head, ...tail]) ->

@@ -5,6 +5,7 @@ module.exports = ->
   FONT_SIZE = 13
   PADDING = 8
   MARGIN = 2
+  BORDER_COLOR = '#ccc'
 
   {
     col: {
@@ -22,7 +23,7 @@ module.exports = ->
     },
     btn: {
       marginBottom: MARGIN,
-      borderColor: '#ccc',
+      borderColor: BORDER_COLOR,
       borderWidth: 1,
       borderRadius: BORDER_RADIUS,
       padding: PADDING,
@@ -49,6 +50,10 @@ module.exports = ->
     cell: {
       borderTopWidth: 1,
       borderRightWidth: 1,
-      borderColor: '#ccc',
+      borderColor: BORDER_COLOR,
+    },
+    underlined: {
+      borderBottomWidth: 1,
+      borderColor: BORDER_COLOR,
     }
   }

@@ -80,7 +80,7 @@ render_timeline_axis = (state) -->
 render_timeline = (state) -->
   mf = 'YYYY-MM-DD'
   this_day = state.current.moment.format(mf)
-  React.createElement( RN.View, {key: "timeline", style: [styles.row]}, [
+  React.createElement( RN.View, {key: "timeline", style: [styles.row, styles.underlined]}, [
     render_timeline_axis(state),
     React.createElement( RN.View, {key: "timeline_content", style: [styles.col, {flex: 3}]},
       state.response_state.sessions
@@ -95,7 +95,7 @@ render_calendar = (state) -->
     if state.blocks.calendar
       [
         [React.createElement(Calendar, cal_opts(state.utils))]
-        |> React.createElement( RN.View, {key: "calendar_wrapper", style: [{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}]}, _)
+        |> React.createElement( RN.View, {key: "calendar_wrapper", style: [{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}, styles.underlined]}, _)
       ]
     else
       []
