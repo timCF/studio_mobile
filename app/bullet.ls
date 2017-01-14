@@ -12,7 +12,7 @@ module.exports = (state) -->
   #
   #
   require("bulletjs")
-  bullet = jQuery.bullet("ws://193.70.100.32:7773/bullet")
+  bullet = jQuery.bullet("wss://crm.lemooorstudio.ru:7773/bullet")
   bullet.onopen = ->
     utils.mutate_state(["app_status"], "соединение с сервером установлено")
     console.log(state.app_status)

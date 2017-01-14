@@ -8,8 +8,8 @@ module.exports = (root_component) ->
     ready2render: false,
     response_state: false,
     current: {
-      location_id: "1",
-      room_id: "2",
+      location_id: "", # "1"
+      room_id: "", # "2"
       moment: moment(),
     },
     blocks: {

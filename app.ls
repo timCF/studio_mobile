@@ -73,7 +73,7 @@ render_options = (state) -->
 
 render_timeline_axis = (state) -->
   ["09",10,11,12,13,14,15,16,17,18,19,20,21,22,23].map((n) -->
-    [React.createElement( RN.Text, {key: "timeline_axis_#{n}", style: [styles.poor_text, styles.flex1]}, "#{n}:00")]
+    [React.createElement( RN.Text, {key: "timeline_axis_#{n}", style: [styles.text, styles.flex1]}, "#{n}:00")]
     |> React.createElement( RN.View, {key: "timeline_axis_wrapper_#{n}", style: [styles.row, styles.flex1, styles.cell, {height: CELL_HEIGHT}]}, _))
   |> React.createElement( RN.View, {key: "timeline_axis", style: [styles.col, styles.flex1]}, _)
 
