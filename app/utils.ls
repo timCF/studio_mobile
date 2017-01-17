@@ -29,7 +29,7 @@ module.exports = (state, root_component) -->
       msg.cmd = 'CMD_get_state'
       utils.to_server(msg)
     render: -->
-      console.log("RENDER", state)
+      #console.log("RENDER", state)
       root_component.setState(state)
     mutate_state: (path, val) -->
       jf.put_in(state, path, val)
@@ -53,7 +53,7 @@ module.exports = (state, root_component) -->
           #
           # TODO
           #
-          console.log(state)
+          #console.log(state)
     date2moment: (date) ->
       moment(date.getTime())
     verbose_current_date: -> "#{state.current.moment.format('YYYY-MM-DD')} #{verbose.days_long[ state.current.moment.day() ]}"
